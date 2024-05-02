@@ -20,16 +20,16 @@ public class DBPopulator {
             // Faker instance for generating fake data
             Faker faker = new Faker();
             // Generate and insert fake data for Student entity
-            insertFakeStudents(conn, faker, 20); // Insert 20 fake students
+            insertFakeStudents(conn, faker, 10); // Insert 20 fake students
 
             // Generate and insert fake data for Major entity
-            insertFakeMajors(conn, faker, 20); // Insert 10 fake majors
+            insertFakeMajors(conn, faker, 10); // Insert 10 fake majors
 
             // Generate and insert fake data for Course entity
             insertFakeCourses(conn, faker, 10); // Insert 50 fake courses
 
             // Generate and insert fake data for Transcript entity
-            insertFakeTranscripts(conn, faker, 20); // Insert 1000 fake transcripts
+            insertFakeTranscripts(conn, faker, 10); // Insert 10 fake transcripts
 
             System.out.println("Data insertion completed successfully ;)");
 
@@ -67,6 +67,8 @@ public class DBPopulator {
                     System.out.println("Current Faculty: " + currentFaculty);
                     System.out.println("----------------------------------");
                 }
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -114,19 +116,29 @@ public class DBPopulator {
 
 
     private static void insertFakeMajors(Connection conn, Faker faker, int count) throws SQLException {
-        String sql = "INSERT INTO Major (MajorName, Description, Specialisations, Department, Prerequisites, RequiredCourses, GraduationRequirements) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Major (MajorName, Description, Specialisations, Department, Prerequisites) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < count; i++) {
                 pstmt.setString(1, generateFakeMajorName());
                 pstmt.setString(2, faker.lorem().sentence());
                 pstmt.setString(3, faker.lorem().words(3).toString());
                 pstmt.setString(4, faker.company().industry());
-                pstmt.setString(5, faker.lorem().words(3).toString());
-                pstmt.setString(6, faker.lorem().words(3).toString());
-                pstmt.setString(7, faker.lorem().sentence());
+                pstmt.setString(5, "pass in MAM1000F");
                 pstmt.executeUpdate();
             }
         }
+    }
+
+    private static String generateFakeMajorName() {
+        String[] majors = {
+            "Applied Mathematics", "Applied Statistics", "Archaeology", "Astrophysics", 
+            "Biochemistry", "Biology", "Chemistry", "Computer Science", "Computer Engineering", 
+            "Business Computing", "Environmental & Geographical Science", "Genetics", "Geology", 
+            "Human Anatomy & Physiology", "Marine Biology", "Mathematics", "Mathematical Statistics", 
+            "Ocean & Atmosphere Science", "Physics", "Quantitative Biology", "Statistics & Data Science"
+        };
+        Random random = new Random();
+        return majors[random.nextInt(majors.length)];
     }
 
     private static void insertFakeCourses(Connection conn, Faker faker, int count) throws SQLException {
@@ -147,15 +159,5 @@ public class DBPopulator {
     }
     
 
-    private static String generateFakeMajorName() {
-        String[] majors = {
-            "Applied Mathematics", "Applied Statistics", "Archaeology", "Astrophysics", 
-            "Biochemistry", "Biology", "Chemistry", "Computer Science", "Computer Engineering", 
-            "Business Computing", "Environmental & Geographical Science", "Genetics", "Geology", 
-            "Human Anatomy & Physiology", "Marine Biology", "Mathematics", "Mathematical Statistics", 
-            "Ocean & Atmosphere Science", "Physics", "Quantitative Biology", "Statistics & Data Science"
-        };
-        Random random = new Random();
-        return majors[random.nextInt(majors.length)];
-    }
+
 }
